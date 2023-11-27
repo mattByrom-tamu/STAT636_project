@@ -18,8 +18,9 @@ continuous_ColNames <- names(df[c(7, 13, 22:36)]) # all of the predictors not in
 cat_Pred = df[-c(7, 13, 22:36)]
 continuousPred = df[c(7, 13, 22:36)]
 
-# update data types/classes for the categorical variables. Other variable classes are fine. 
+# update data types/classes for the categorical variables. Other variable numeric. 
 df[cat_ColNames] <- lapply(df[cat_ColNames], factor)
+df[continuous_ColNames] <- lapply(df[continuous_ColNames], as.numeric)
 
 # double check classes
 custom_view(df)
@@ -40,6 +41,14 @@ for(i in cat_ColNames){
     xlab("categories") +
     theme(plot.title = element_text(hjust = 0.5)))
 }
+
+# plots for continuous variables
+for(i in continuous_ColNames){
+  hist(prop.table(table(df[i])), xlab = "numerical value", main = as.character(i), breaks = 10) # change breaks for bins
+}
+
+
+hist(df$Previous.qualification..grade.)
 
 # outliers (only applicable to continuous Variables) 
 
