@@ -33,7 +33,7 @@ summary(df)
 
 # histograms, box plots, bar charts(cat data)
 for(i in cat_ColNames){
-  # barplots 
+  # barplots % of observations 
   barplot(prop.table(table(df[i])), xlab = "categories", ylab = "% observations", main = as.character(i))
   # barplots with sum counts 
   print(ggplot(df) + geom_bar(aes_string(x = i)) + ggtitle(as.character(i)) +
@@ -41,7 +41,7 @@ for(i in cat_ColNames){
     theme(plot.title = element_text(hjust = 0.5)))
 }
 
-# outliers (only aplicable to continuous) 
+# outliers (only applicable to continuous Variables) 
 
 # contingency tables? 
 
