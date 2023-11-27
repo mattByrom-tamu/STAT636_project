@@ -1,5 +1,6 @@
 # R functions 
 
+# function to show Variable Name, Col Index, and class for data frame. Adapted from stack overflow. 
 custom_view = function(df){
   data.frame(
     col_name = colnames(df),
