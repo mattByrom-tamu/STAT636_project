@@ -17,6 +17,12 @@ df$Marital.status <- factor(df$Marital.status)
 cat_ColNames <- names(df[-c(7, 13, 22:36)]) # age is 20, could be considered ordinal. Includes response variable (Target) 
 continuous_ColNames <- names(df[c(7, 13, 22:36)]) # all of the predictors not in cat_ColNames
 
+# update data types/classes for the categorical variables. Other variable classes are fine. 
+df[cat_ColNames] <- lapply(df[cat_ColNames], factor)
+
+# double check classes
+custom_view(df)
+
 # code to look for NA values
 
 # summary statistics/tables
