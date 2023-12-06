@@ -128,10 +128,11 @@ plot(fit.LASSO, "lambda")
 
 cvLASSO <- cv.glmnet(x, y, alpha = 1, family = "binomial", type.measure = "class")
 cvLASSO$lambda.min # optimal lambda 
+cvLASSO$lambda.1se
 coef(cvLASSO, s='lambda.1se')
 plot(cvLASSO)
 
-coef(glmnet(x, y, alpha = 1, family = "binomial", lambda = ))
-
+coef(cvLASSO, cvLASSO$lambda.min)
+coef(cvLASSO, cvLASSO$lambda.1se)
 
 attach(Students)
