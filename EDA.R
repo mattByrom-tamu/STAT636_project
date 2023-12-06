@@ -8,12 +8,16 @@ install.packages("GGally")
 install.packages("vtable")
 install.packages("reshape")
 install.packages("rcompanion")
+install.packages("caret")
+install.packages("glmnet")
 library(rcompanion)
 library(reshape)
 library(GGally)
 library(tidyverse)
 library(ggplot2)
 library(vtable)
+library(caret)
+library(glmnet)
 # import dataset 
 df = read.csv("valentim_Academic_Success.csv", sep = ";") #Semicolon separator 
 
@@ -21,7 +25,7 @@ df = read.csv("valentim_Academic_Success.csv", sep = ";") #Semicolon separator
 df$Marital.status <- factor(df$Marital.status)
 cat_ColNames <- names(df[-c(7, 13, 22:36)]) # age is 20, could be considered ordinal. Includes response variable (Target) 
 continuous_ColNames <- names(df[c(7, 13, 20, 22:36)]) # all of the predictors not in cat_ColNames
-
+predictors <- names(df[1:36])
 # create subsets of data, categorical and continuous 
 cat_Pred = df[-c(7, 13, 22:36)]
 continuousPred = df[c(7, 13, 20, 22:36)]
@@ -81,6 +85,7 @@ ggplot(data = melted_corCont, aes(x=X1, y = X2, fill=value)) +
 dfDropout = subset(df, df$Target == "Dropout")
 dfEnrolled = subset(df, df$Target == "Enrolled")
 dfGraduate = subset(df, df$Target == "Graduate")
+
 sumtable(df, group = 'Target', group.test = TRUE)
 
 # 
@@ -103,3 +108,30 @@ tree.subset <- tree(High ~ . - Rate_unemployment, subset)
 summary(tree.subset)
 
 
+# logistic regression 
+dfNew = subset(df, df$Target != "Enrolled") # Removing enrolled so we have a simpler regression problem
+# make the Target 1 (Graduate) and 0 (Drop out)
+dfNew$Target
+y = ifelse(df$Target == "Graduate", 1 , 0)
+x = model.matrix(Target~., df)[,-1]
+
+fit <- glm(Target ~ ., family = binomial(link = logit), data = df)
+summary(fit)
+
+# Example from Cat TB
+
+ fit <- glm(Target ~ ., family = binomial, data = dfNew)
+ summary(fit)
+
+fit.LASSO <- glmnet(x, y, alpha = 1, family = "binomial")
+plot(fit.LASSO, "lambda")
+
+cvLASSO <- cv.glmnet(x, y, alpha = 1, family = "binomial", type.measure = "class")
+cvLASSO$lambda.min # optimal lambda 
+coef(cvLASSO, s='lambda.1se')
+plot(cvLASSO)
+
+coef(glmnet(x, y, alpha = 1, family = "binomial", lambda = ))
+
+
+attach(Students)
