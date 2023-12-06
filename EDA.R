@@ -5,10 +5,15 @@ source("R_functions.R")
 
 # install.packages("tidyverse")
 install.packages("GGally")
+install.packages("vtable")
+install.packages("reshape")
+install.packages("rcompanion")
+library(rcompanion)
+library(reshape)
 library(GGally)
 library(tidyverse)
 library(ggplot2)
-
+library(vtable)
 # import dataset 
 df = read.csv("valentim_Academic_Success.csv", sep = ";") #Semicolon separator 
 
@@ -48,20 +53,35 @@ for(i in cat_ColNames){
 # plots for continuous variables
 for(i in continuous_ColNames){
   hist(prop.table(table(df[i])), xlab = "numerical value", main = as.character(i), breaks = 10) # change breaks for bins
+  boxplot(df[[i]] ~ df$Target, main = as.character(i), ylab = "Countinous Var Count", xlab = "Academic Success") # boxplots broken out by target variable
 }
 
-
-# outliers (only applicable to continuous Variables) 
-
-# contingency tables? 
+boxplot(df[GDP] ~ df$Target, main = as.character(i))
 
 # Correlation: Cramer's V or phi squared for categorical data (keep in mind most variables are categorical)
+corCont = round(cor(continuousPred),2) # rounded
+melted_corCont = melt(get_lower_tri(corCont), na.rm = TRUE)
 
-# note: haven't used Cramer's V before. But it's cited a bunch of places for categorical data 
+#heatmap for cont variable
+ggplot(data = melted_corCont, aes(x=X1, y = X2, fill=value)) + 
+  geom_tile(color = "white")+
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), space = "Lab", 
+                       name="Pearson\nCorrelation") +
+  theme_minimal()+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                   size = 12, hjust = 1))+
+  coord_fixed()  
+  
+# Cramers V having issues with Cramer's V. Looks like you have to run it with a contingency table rather than a DF. Can look into this later
 
-# heatmap for continuous variables correlation
 
 # summary statistic comparisons based on target partitions 
+# make df of the different target variables
+dfDropout = subset(df, df$Target == "Dropout")
+dfEnrolled = subset(df, df$Target == "Enrolled")
+dfGraduate = subset(df, df$Target == "Graduate")
+sumtable(df, group = 'Target', group.test = TRUE)
 
 # 
 # ggpairs(df, cardinality_threshold = 50)

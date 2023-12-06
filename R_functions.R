@@ -29,3 +29,13 @@ cust_hist = function(df, colNames){
     hist(prop.table(table(df[i])), xlab = "numerical value", main = as.character(i), breaks = 10) # change breaks for bins
   }
 }
+
+get_lower_tri <- function(cormat){
+  cormat[upper.tri(cormat)] <- NA
+  return(cormat)
+}
+
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)] <- NA
+  return(cormat)
+}
