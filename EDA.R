@@ -12,16 +12,18 @@ source("R_functions.R")
 # install.packages("glmnet")
 # install.packages("BART")
 # install.packages("gbm")
-library(gbm)
-library(BART)
-library(rcompanion)
-library(reshape)
-library(GGally)
+# install.packages("ggpubr")
 library(tidyverse)
-library(ggplot2)
+library(GGally)
 library(vtable)
+library(reshape)
+library(rcompanion)
 library(caret)
 library(glmnet)
+library(BART)
+library(gbm)
+library(ggpubr)
+library(ggplot2)
 
 
 # import dataset 
@@ -49,6 +51,11 @@ sum(is.na(df)) # no missing values, no imputation needed. Supported in dataset d
 
 # summary statistics/tables
 summary(df)
+
+# frequency distribution chart of data grouped by 3 classifications found in column 'Target'
+> ggplot(df, aes(Target)) +
++     geom_bar(fill = "white", color = "black") +
++     theme_pubclean()
 
 # histograms, box plots, bar charts(cat data)
 for(i in cat_ColNames){
