@@ -53,9 +53,7 @@ sum(is.na(df)) # no missing values, no imputation needed. Supported in dataset d
 summary(df)
 
 # frequency distribution chart of data grouped by 3 classifications found in column 'Target'
-> ggplot(df, aes(Target)) +
-+     geom_bar(fill = "white", color = "black") +
-+     theme_pubclean()
+ggplot(df, aes(Target)) + geom_bar(fill = "white", color = "black") + theme_pubclean()
 
 # histograms, box plots, bar charts(cat data)
 for(i in cat_ColNames){
@@ -96,7 +94,7 @@ dfDropout = subset(df, df$Target == "Dropout")
 dfGraduate = subset(df, df$Target == "Graduate")
 sumtable(df, group = 'Target', group.test = TRUE)
 
-# set training and test data before modeling, did 50/50 split
+# set training and test data before modeling, did 50/50 split.
 trainSize = dim(df)[1]/2 
 train = sample(1:dim(df)[1], trainSize)
 test = -train
@@ -150,16 +148,8 @@ boostDF = gbm(Target ~ ., data = df,
               interaction.depth = 7)
 summary(boostDF) # fix this plot 
 mean(boostDF$cv.error)
-
-boostDF = gbm(Target ~ ., data = df,
-              distribution = "gaussian", n.trees = 2000,
-              cv.folds = 5,
-              shrinkage = .010,
-              interaction.depth = 7)
-summary(boostDF) # fix this plot 
-mean(boostDF$cv.error)
 length(boostDF$cv.error)
-gbm.perf(boostDF, plot.it = TRUE, method = "cv")
+gbm.perf(boostDF, plot.it = TRUE, method = "cv") # this is a good chart to use 
 
 # test different n.trees 
 # testing different interaction depths and shrinking parameters 
