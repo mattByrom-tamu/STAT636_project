@@ -126,26 +126,20 @@ log(cvLASSO$lambda.1se) # value of the 2nd (rightmost) line on the plot
 
 cvLASSO$glmnet.fit # plot of lambda values, df, and % deviance.
 cvLASSO$index # index of lambda min and 1se in the matrix above 
-
+cvLASSO$cvm # estimated error 
+which.min(cvLASSO$cvm) # index of CVM error min (this is min lambda)
+cvLASSO$cvm[47] # error or minimum of this red log(lambda) graph 
+cvLASSO$cvm[38] # error or minimum of this red log(lambda) graph 
 
 # Tree modeling 
 # Boosting model 
-
 boostDF = gbm(Target ~ ., data = df,
-              distribution = "gaussian", n.trees = 5000,
+              distribution = "gaussian", n.trees = 2000,
               cv.folds = 5,
-              interaction.depth = 4)
-summary(boostDF)
+              shrinkage = .010,
+              interaction.depth = 7)
+summary(boostDF) # fix this plot 
 mean(boostDF$cv.error)
-
-# testing different interaction depths 
-for(i in 2:7){
-  boostDF = gbm(Target ~ ., data = df,
-                distribution = "gaussian", n.trees = 500,
-                cv.folds = 5,
-                interaction.depth = i)
-  print(paste("depth ", i , " mean error: " ,mean(boostDF$cv.error)))
-}
 
 # test different n.trees 
 # testing different interaction depths and shrinking parameters 
@@ -170,11 +164,11 @@ for(lambda in c(.0001, .001, .01, .1, .2)) {
 }
 }
 
-# save this f****** df 
+# save this df 
 save(pickingTuners, file = "pickingTuners.Rda")
 
 # dont run the file use file here
-tryThis <- load(file = 'pickingTuners.Rda')
+load(file = 'pickingTuners.Rda')
 
 sortedMEanErrors <- arrange(pickingTuners, meanError) # arrange the tuners by meanErrors 
 
