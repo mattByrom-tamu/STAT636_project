@@ -90,7 +90,7 @@ dfGraduate = subset(df, df$Target == "Graduate")
 sumtable(df, group = 'Target', group.test = TRUE)
 
 # set training and test data before modeling, did 50/50 split
-trainSize = dim(df)[1]/2 # 20% of values for training set
+trainSize = dim(df)[1]/2 
 train = sample(1:dim(df)[1], trainSize)
 test = -train
 dfTrain = df[train,]
@@ -151,8 +151,7 @@ for(i in 2:7){
 # testing different interaction depths and shrinking parameters 
 # I know this is bad R code so be careful, this will take a long time to run :) 
 # create df to hold values
-pickingTuners <- data.frame(depth = c(), nTrees = c(), Lambda = c(), meanError = c())
-# pickingTuners <- rbind(pickingTuners, list(1, 3, 4, 5))
+pickingTuners <- data.frame(depth = c(0), nTrees = c(0), Lambda = c(0), meanError = c(0))
 for(depth in 1:7){
 for(lambda in c(.0001, .001, .01, .1, .2)) {
   for (i in c(50, 100, 150, 200, 300, 400, 500, 750, 1000, 1500, 2000)) {
@@ -165,11 +164,23 @@ for(lambda in c(.0001, .001, .01, .1, .2)) {
       shrinkage = lambda,
       interaction.depth = depth
     ) # using 4 interaction trees
-    pickingTuners <- rbind(pickingTuners, list(i, lambda, mean(boostDF$cv.error)))
+    pickingTuners <- rbind(pickingTuners, list(depth, i, lambda, mean(boostDF$cv.error)))
     print(paste("depth: ", depth, "n.trees: ",i ,", shrinking parameter: ",lambda," mean error: " ,mean(boostDF$cv.error)))
   }
 }
 }
+
+# save this f****** df 
+save(pickingTuners, file = "pickingTuners.Rda")
+
+# dont run the file use file here
+tryThis <- load(file = 'pickingTuners.Rda')
+
+sortedMEanErrors <- arrange(pickingTuners, meanError) # arrange the tuners by meanErrors 
+
+plot(pickingTuners$meanError, pickingTuners$Lambda)
+plot(pickingTuners$meanError, pickingTuners$nTrees)
+plot(pickingTuners$meanError, pickingTuners$depth)
 
 # going to use 
 # testing 
