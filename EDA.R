@@ -180,12 +180,17 @@ save(pickingTuners, file = "pickingTuners.Rda")
 # dont run the file use file here
 load(file = 'pickingTuners.Rda')
 
+pickingTuners <- pickingTuners[-1,]
+
 sortedMEanErrors <- arrange(pickingTuners, meanError) # arrange the tuners by meanErrors 
 
 plot(pickingTuners$meanError, pickingTuners$Lambda)
 plot(pickingTuners$meanError, pickingTuners$nTrees)
 plot(pickingTuners$meanError, pickingTuners$depth)
 
+library(ggplot2)
+ggplot(pickingTuners, aes(x = meanError, y = Lambda, colour = depth)) + geom_point()
+ggplot(pickingTuners, aes(x = meanError, y = Lambda, colour = nTrees)) + geom_point()
 # predictions example 
 predict()
 
