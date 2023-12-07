@@ -140,6 +140,9 @@ cvLASSO$cvm[38] # error or minimum of this red log(lambda) graph
 
 # Tree modeling 
 # Boosting model 
+df$Target = ifelse(df$Target == "Graduate", 1 , 0)
+df[cat_ColNames] <- lapply(df[cat_ColNames], factor) # reapply the factor data type
+
 boostDF = gbm(Target ~ ., data = df,
               distribution = "gaussian", n.trees = 2000,
               cv.folds = 5,
@@ -147,6 +150,16 @@ boostDF = gbm(Target ~ ., data = df,
               interaction.depth = 7)
 summary(boostDF) # fix this plot 
 mean(boostDF$cv.error)
+
+boostDF = gbm(Target ~ ., data = df,
+              distribution = "gaussian", n.trees = 2000,
+              cv.folds = 5,
+              shrinkage = .010,
+              interaction.depth = 7)
+summary(boostDF) # fix this plot 
+mean(boostDF$cv.error)
+length(boostDF$cv.error)
+gbm.perf(boostDF, plot.it = TRUE, method = "cv")
 
 # test different n.trees 
 # testing different interaction depths and shrinking parameters 
@@ -182,6 +195,10 @@ sortedMEanErrors <- arrange(pickingTuners, meanError) # arrange the tuners by me
 plot(pickingTuners$meanError, pickingTuners$Lambda)
 plot(pickingTuners$meanError, pickingTuners$nTrees)
 plot(pickingTuners$meanError, pickingTuners$depth)
+
+# predictions example 
+predict()
+
 
 # going to use 
 # testing 
