@@ -65,6 +65,13 @@ for(i in cat_ColNames){
     theme(plot.title = element_text(hjust = 0.5)))
 }
 
+ggplot(df) + geom_bar(aes_string(x = Course, fill = Target)) + ggtitle(as.character(i)) +
+  xlab("categories") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggplot(df, aes(fill = Target, x = Scholarship.holder)) + geom_bar(position="stack", stat = "count")
+
 # plots for continuous variables
 for(i in continuous_ColNames){
   hist(prop.table(table(df[i])), xlab = "numerical value", main = as.character(i), breaks = 10) # change breaks for bins
